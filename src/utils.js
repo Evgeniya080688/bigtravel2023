@@ -10,7 +10,9 @@ const getRandomInteger = (a = 0, b = 1) => {
 };
 
 const humanizeTaskDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
+const getHour = (dueDate) => dayjs(dueDate).format('HH');
+const getMinutes = (dueDate) => dayjs(dueDate).format('m');
 
-export {getRandomInteger, humanizeTaskDueDate};
+export {getRandomInteger, humanizeTaskDueDate, getHour, getMinutes};
 
 

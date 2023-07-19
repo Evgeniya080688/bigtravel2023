@@ -20,9 +20,18 @@ export const generatePoint = () => ({
   basePrice: getRandomInteger(500,10000),
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo: '2019-07-11T11:22:13.375Z',
-  destination: generateDestination(),
+  destination: {
+    description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
+    name: generateDestination(),
+    pictures: [
+      {
+        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        description: 'Chamonix parliament building'
+      }
+    ]
+  },
   id: 0,
   isFavorite: false,
-  offers: '',
+  offers: [getRandomInteger(0, 6),getRandomInteger(0, 6),getRandomInteger(0, 6)],
   type: generateType()
 });
