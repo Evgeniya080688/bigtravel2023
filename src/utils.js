@@ -14,7 +14,7 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const humanizeTaskDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
+const humanizeDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
 const beautyDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
 const getHour = (dueDate) => {
   dueDate = dayjs(dueDate).tz('Europe/London');
@@ -57,6 +57,6 @@ const duration = (dateFrom, dateTo) => {
   }
 };
 
-export {getRandomInteger, humanizeTaskDueDate, getHour, getMinutes, duration, beautyDate};
+export {getRandomInteger, humanizeDueDate, getHour, getMinutes, duration, beautyDate};
 
 

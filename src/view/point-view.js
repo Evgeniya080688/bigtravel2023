@@ -1,6 +1,6 @@
 import {createElement} from '../render.js';
 import {offers as offersFull}  from '../mock/offers.js';
-import {humanizeTaskDueDate, getHour, getMinutes, duration} from '../utils.js';
+import {humanizeDueDate, getHour, getMinutes, duration} from '../utils.js';
 
 const createPointTemplate = (point) => {
   const {basePrice, dateFrom, dateTo, destination, type, offers, isFavorite} = point;
@@ -23,10 +23,10 @@ const createPointTemplate = (point) => {
     ? '--active'
     : '';
   const dateStart = dateFrom !== null
-    ? humanizeTaskDueDate(dateFrom)
+    ? humanizeDueDate(dateFrom)
     : '';
   const dateEnd = dateTo !== null
-    ? humanizeTaskDueDate(dateTo)
+    ? humanizeDueDate(dateTo)
     : '';
   const hourStart = dateFrom !== null
     ? getHour(dateFrom)
