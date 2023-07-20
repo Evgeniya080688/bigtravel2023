@@ -24,13 +24,21 @@ export const generatePoint = () => ({
     name: generateDestination(),
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: `http://picsum.photos/248/152?r=${Math.random()}`,
+        description: 'Chamonix parliament building'
+      },
+      {
+        src: `http://picsum.photos/248/152?r=${Math.random()}`,
+        description: 'Chamonix parliament building'
+      },
+      {
+        src: `http://picsum.photos/248/152?r=${Math.random()}`,
         description: 'Chamonix parliament building'
       }
     ]
   },
   id: 0,
   isFavorite: false,
-  offers: [getRandomInteger(0, 6),getRandomInteger(0, 6),getRandomInteger(0, 6)],
+  offers: [getRandomInteger(0, 5),getRandomInteger(0, 5),getRandomInteger(0, 5)],
   type: generateType()
 });

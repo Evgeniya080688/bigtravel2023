@@ -1,4 +1,9 @@
 import dayjs from 'dayjs';
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -10,7 +15,11 @@ const getRandomInteger = (a = 0, b = 1) => {
 };
 
 const humanizeTaskDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
-const getHour = (dueDate) => dayjs(dueDate).format('HH');
+const beautyDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
+const getHour = (dueDate) => {
+  dueDate = dayjs(dueDate).tz('Europe/London');
+  return dayjs(dueDate).format('HH');
+};
 const getMinutes = (dueDate) => dayjs(dueDate).format('mm');
 const duration = (dateFrom, dateTo) => {
   let due = dayjs(dateTo).diff(dayjs(dateFrom), 'm');
@@ -48,6 +57,6 @@ const duration = (dateFrom, dateTo) => {
   }
 };
 
-export {getRandomInteger, humanizeTaskDueDate, getHour, getMinutes, duration};
+export {getRandomInteger, humanizeTaskDueDate, getHour, getMinutes, duration, beautyDate};
 
 
