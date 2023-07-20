@@ -1,11 +1,10 @@
 import {getRandomInteger} from '../utils.js';
+import {TYPES_TRANSPORT} from '../const.js';
 
 const generateType = () => {
-  const typesTransport = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+  const randomIndex = getRandomInteger(0, TYPES_TRANSPORT.length - 1);
 
-  const randomIndex = getRandomInteger(0, typesTransport.length - 1);
-
-  return typesTransport[randomIndex];
+  return TYPES_TRANSPORT[randomIndex];
 };
 
 const generateDestination = () => {
@@ -18,8 +17,8 @@ const generateDestination = () => {
 
 export const generatePoint = () => ({
   basePrice: getRandomInteger(500,10000),
-  dateFrom: '2019-07-10T22:55:56.845Z',
-  dateTo: '2019-07-11T11:22:13.375Z',
+  dateFrom: '2019-07-10T20:45:56.845Z',
+  dateTo: '2019-07-12T22:55:13.375Z',
   destination: {
     description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
     name: generateDestination(),
