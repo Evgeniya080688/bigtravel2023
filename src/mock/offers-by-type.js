@@ -1,38 +1,247 @@
 export const offersByType = [
   {
     type: 'taxi',
-    offers: [2,3,4,5]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+    ]
   },
   {
     type: 'bus',
-    offers: [1,2,3]
+    offers: [
+      {
+        id: 1,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 2,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 3,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   },
   {
     type: 'train',
-    offers: [1,2,3]
+    offers: [
+      {
+        id: 1,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 2,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 3,
+        title: 'Choose seats',
+        price: 5
+      },
+      {
+        id: 4,
+        title: 'Travel by train',
+        price: 40
+      }
+    ]
   },
   {
     type: 'ship',
-    offers: [1,2,3]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 4,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 5,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   },
   {
     type: 'drive',
-    offers: [1,2,3]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 4,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 5,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   },
   {
     type: 'flight',
-    offers: [1,2,3]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 4,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 5,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   },
   {
     type: 'check-in',
-    offers: [1,2,3]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 4,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 5,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   },
   {
     type: 'sightseeing',
-    offers: [1,2,3,5]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 4,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 5,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   },
   {
     type: 'restaurant',
-    offers: [2,3,4,5]
+    offers: [
+      {
+        id: 1,
+        title: 'Upgrade to a business class',
+        price: 120
+      },
+      {
+        id: 2,
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 3,
+        title: 'Add luggage',
+        price: 30
+      },
+      {
+        id: 4,
+        title: 'Switch to comfort class',
+        price: 100
+      },
+      {
+        id: 5,
+        title: 'Choose seats',
+        price: 5
+      }
+    ]
   }
 ];

@@ -22,7 +22,7 @@ const getHour = (dueDate) => {
 };
 const getMinutes = (dueDate) => dayjs(dueDate).format('mm');
 const duration = (dateFrom, dateTo) => {
-  let due = dayjs(dateTo).diff(dayjs(dateFrom), 'm');
+  const due = dayjs(dateTo).diff(dayjs(dateFrom), 'm');
   let hours = '';
   let minutes = '';
   let days = '';
@@ -53,7 +53,7 @@ const duration = (dateFrom, dateTo) => {
     days = (days < 10) ? `0${days}` : days;
     hours = (hours < 10) ? `0${hours}` : hours;
     minutes = (minutes < 10) ? `0${minutes}` : minutes;
-    return (years+'Y '+ days+'D ' + hours + 'H ' + minutes + 'M');
+    return (years +'Y '+ days+'D ' + hours + 'H ' + minutes + 'M');
   }
 };
 

@@ -1,26 +1,25 @@
 import {createElement} from '../render.js';
 import {beautyDate} from '../utils.js';
-import {offers as offersFull}  from '../mock/offers.js';
 import {offersByType}  from '../mock/offers-by-type.js';
 
 const createEditFormTemplate = (point) => {
   const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
 
   const createOffers = () => {
-    const offersList = offersByType.find((item) => item.type === type).offers;
+    const pointTypeOffer = offersByType.find((item) => item.type === type);
     let offersSelected = '';
-    for (let i of offersList) {
-      const checkedOffer = offers.find((item) => item === i) ? 'checked': '';
-      const findedOffer = offersFull.find((item) => item.id === i);
-      offersSelected += `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${findedOffer.id}" type="checkbox" name="event-offer-${findedOffer.id}" ${checkedOffer}>
-              <label class="event__offer-label" for="event-offer-${findedOffer.id}">
-                <span class="event__offer-title">${findedOffer.title}</span>
+    pointTypeOffer.offers
+      .map((offer) => {
+        const checked = offers.includes(offer.id) ? 'checked': '';
+        offersSelected += `<div class="event__offer-selector">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${checked}>
+              <label class="event__offer-label" for="event-offer-${offer.id}">
+                <span class="event__offer-title">${offer.title}</span>
                 &plus;&euro;&nbsp;
-                <span class="event__offer-price">${findedOffer.price}</span>
+                <span class="event__offer-price">${offer.price}</span>
               </label>
             </div>`;
-    }
+      });
     return offersSelected;
   };
 

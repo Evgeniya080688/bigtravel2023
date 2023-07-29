@@ -1,23 +1,27 @@
 import {createElement} from '../render.js';
-import {offers as offersFull}  from '../mock/offers.js';
 import {humanizeDueDate, getHour, getMinutes, duration} from '../utils.js';
+import {offersByType} from '../mock/offers-by-type.js';
 
 const createPointTemplate = (point) => {
   const {basePrice, dateFrom, dateTo, destination, type, offers, isFavorite} = point;
 
-  const createOffers = (offersSelected) => {
-    let offersList = '';
-    for (let i of offersSelected) {
-      const findedOffer = offersFull.find((item) => item.id === i);
-      if (findedOffer) {
-        offersList += `<li className="event__offer">
-        <span className="event__offer-title">${findedOffer.title}</span>
-        &plus;&euro;&nbsp;
-        <span className="event__offer-price">${findedOffer.price}</span>
-      </li>`;
-      }
-    }
-    return offersList;
+  const createOffers = (offersList) => {
+    let offersGet = '';
+    const pointTypeOffer = offersByType.find((item) => item.type === type).offers;
+    const selectedOffers = pointTypeOffer.filter(
+      (offer) => {
+        if (offersList.includes(offer.id)) return offer;
+      });
+
+    selectedOffers
+      .map((offer) => {
+        offersGet += `<li className="event__offer">
+          <span className="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span className="event__offer-price">${offer.price}</span>
+        </li>`;
+      });
+    return offersGet;
   };
   const favorite = isFavorite
     ? '--active'
