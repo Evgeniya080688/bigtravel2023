@@ -11,7 +11,6 @@ const tripsPresenter = new TripsPresenter();
 const pointsModel = new PointsModel();
 
 render(new FilterView(), siteFilterElement);
-render(new SortView(), siteTripEventsElement);
 
 tripsPresenter.init(siteTripEventsElement, pointsModel);
 

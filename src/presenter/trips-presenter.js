@@ -1,13 +1,14 @@
 import ListView from '../view/list-view.js';
 import EditFormView from '../view/edit-form-view';
 import PointView from '../view/point-view';
+import NoListView from '../view/no-points-view.js';
 import {render} from '../render.js';
+import SortView from "../view/sort-view";
 
 export default class TripsPresenter {
   #container = null;
   #pointsModel = null;
   #listComponent = new ListView();
-
   #boardPoints = [];
 
   init = (container, pointsModel) => {
@@ -15,10 +16,15 @@ export default class TripsPresenter {
     this.#pointsModel = pointsModel;
     this.#boardPoints = [...this.#pointsModel.points];
 
-    render(this.#listComponent, this.#container);
+    if (this.#boardPoints.length <= 0) {
+      render(new NoListView(), this.#container);
+    } else {
+      render(new SortView(), this.#container);
+      render(this.#listComponent, this.#container);
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i]);
+      for (let i = 0; i < this.#boardPoints.length; i++) {
+        this.#renderPoint(this.#boardPoints[i]);
+      }
     }
   };
 
@@ -54,6 +60,7 @@ export default class TripsPresenter {
 
     pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
     });
 
 
