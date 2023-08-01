@@ -16,10 +16,15 @@ export default class TripsPresenter {
     this.#boardPoints = [...this.#pointsModel.points];
 
     render(this.#listComponent, this.#container);
-    render(new EditFormView(this.#boardPoints[0]), this.#listComponent.element);
 
     for (let i = 0; i < this.#boardPoints.length; i++) {
-      render(new PointView(this.#boardPoints[i]), this.#listComponent.element);
+      this.#renderPoint(this.#boardPoints[i]);
     }
+  };
+
+  #renderPoint = (point) => {
+    const pointComponent = new PointView(point);
+
+    render(pointComponent, this.#listComponent.element);
   };
 }
