@@ -24,6 +24,30 @@ export default class TripsPresenter {
 
   #renderPoint = (point) => {
     const pointComponent = new PointView(point);
+    const pointEditComponent = new EditFormView(point);
+
+    //render(new EditFormView(this.#boardPoints[0]), this.#listComponent.element);
+    const replacePointToForm = () => {
+      this.#listComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+
+    const replaceFormToPoint= () => {
+      this.#listComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replacePointToForm();
+    });
+
+    pointEditComponent.element.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+    });
+
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToPoint();
+    });
+
 
     render(pointComponent, this.#listComponent.element);
   };
