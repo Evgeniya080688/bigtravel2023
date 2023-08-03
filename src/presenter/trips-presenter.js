@@ -3,7 +3,7 @@ import EditFormView from '../view/edit-form-view';
 import PointView from '../view/point-view';
 import NoListView from '../view/no-points-view.js';
 import {render} from '../render.js';
-import SortView from "../view/sort-view";
+import SortView from '../view/sort-view.js';
 
 export default class TripsPresenter {
   #container = null;
@@ -11,20 +11,27 @@ export default class TripsPresenter {
   #listComponent = new ListView();
   #boardPoints = [];
 
-  init = (container, pointsModel) => {
+  constructor(container, pointsModel) {
     this.#container = container;
     this.#pointsModel = pointsModel;
+  }
+
+  init = () => {
     this.#boardPoints = [...this.#pointsModel.points];
 
+    this.#renderBoard();
+  };
+
+  #renderBoard = () => {
     if (this.#boardPoints.length <= 0) {
       render(new NoListView(), this.#container);
-    } else {
-      render(new SortView(), this.#container);
-      render(this.#listComponent, this.#container);
+      return;
+    }
+    render(new SortView(), this.#container);
+    render(this.#listComponent, this.#container);
 
-      for (let i = 0; i < this.#boardPoints.length; i++) {
-        this.#renderPoint(this.#boardPoints[i]);
-      }
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
     }
   };
 
@@ -62,7 +69,6 @@ export default class TripsPresenter {
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
-
 
     render(pointComponent, this.#listComponent.element);
   };

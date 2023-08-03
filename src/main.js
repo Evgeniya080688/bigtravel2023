@@ -7,11 +7,12 @@ import {render} from './render.js';
 
 const siteFilterElement = document.querySelector('.trip-controls__filters');
 const siteTripEventsElement = document.querySelector('.trip-events');
-const tripsPresenter = new TripsPresenter();
 const pointsModel = new PointsModel();
+const tripsPresenter = new TripsPresenter(siteTripEventsElement, pointsModel);
+
 
 render(new FilterView(), siteFilterElement);
 
-tripsPresenter.init(siteTripEventsElement, pointsModel);
+tripsPresenter.init();
 
 
