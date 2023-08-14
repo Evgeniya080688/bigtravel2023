@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {beautyDate, getRandomInteger} from '../utils.js';
+import {beautyDate} from '../utils/point.js';
+import {getRandomInteger} from '../utils/common.js';
 import {offersByType}  from '../mock/offers-by-type.js';
 import {TYPES_TRANSPORT} from '../const.js';
 
