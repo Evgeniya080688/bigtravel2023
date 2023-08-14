@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
+const isToday = require('dayjs/plugin/isToday');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -19,9 +20,8 @@ const duration = (dateFrom, dateTo) => {
   let days = '';
   let years = '';
   if (due < 60) {
-    (due < 10) ? `0${due}`: due;
-    return (due + 'M');}
-  else if (due>= 60 && due < 1440) {
+    (due < 10) ? `0${due}M`: `${due}'M`;
+  } else if (due>= 60 && due < 1440) {
     hours = dayjs(dateTo).diff(dayjs(dateFrom), 'hour');
     minutes = due - hours * 60;
     hours = (hours < 10) ? `0${hours}` : hours;
@@ -48,6 +48,8 @@ const duration = (dateFrom, dateTo) => {
   }
 };
 
-export {humanizeDueDate, getHour, getMinutes, duration, beautyDate};
+const isPointFuture = (dateFrom) =>dayjs(dateFrom).diff(dayjs(isToday), 'm');
+
+export {humanizeDueDate, getHour, getMinutes, duration, beautyDate, isPointFuture};
 
 
