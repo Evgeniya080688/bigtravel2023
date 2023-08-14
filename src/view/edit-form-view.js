@@ -1,6 +1,23 @@
+import AbstractView from '../framework/view/abstract-view.js';
 import {createElement} from '../render.js';
-import {beautyDate} from '../utils.js';
+import {beautyDate, getRandomInteger} from '../utils.js';
 import {offersByType}  from '../mock/offers-by-type.js';
+import {TYPES_TRANSPORT} from '../const.js';
+
+const BLANK_POINT = {
+  basePrice: getRandomInteger(500,10000),
+  dateFrom: '2019-07-10T20:45:56.845Z',
+  dateTo: '2019-07-12T22:55:13.375Z',
+  destination: {
+    description: '',
+    name: '',
+    pictures: []
+  },
+  id: 0,
+  isFavorite: false,
+  offers: [getRandomInteger(0, 5),getRandomInteger(0, 5),getRandomInteger(0, 5)],
+  type:  TYPES_TRANSPORT[0]
+};
 
 const createEditFormTemplate = (point) => {
   const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
@@ -21,6 +38,14 @@ const createEditFormTemplate = (point) => {
             </div>`;
       });
     return offersSelected;
+  };
+  const createPictures = () => {
+    let picturesListElement = '';
+    const picturesArray = destination.pictures;
+    picturesArray.forEach((picture) => {
+      picturesListElement += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+    });
+    return picturesListElement ;
   };
 
   return (
@@ -134,11 +159,8 @@ const createEditFormTemplate = (point) => {
           <p class="event__destination-description">${destination.description}</p>
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+
+              ${createPictures()}
             </div>
           </div>
         </section>
@@ -148,26 +170,14 @@ const createEditFormTemplate = (point) => {
   );
 };
 
-export default class EditFormView {
-  #element = null;
+export default class EditFormView extends AbstractView {
   #point = null;
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
+    super();
     this.#point = point;
   }
 
   get template() {
     return createEditFormTemplate(this.#point);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

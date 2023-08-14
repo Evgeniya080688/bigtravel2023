@@ -1,3 +1,4 @@
+import {render} from '../framework/render.js';
 import ListView from '../view/list-view.js';
 import EditFormView from '../view/edit-form-view';
 import PointView from '../view/point-view';
