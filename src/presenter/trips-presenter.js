@@ -3,7 +3,6 @@ import ListView from '../view/list-view.js';
 import EditFormView from '../view/edit-form-view';
 import PointView from '../view/point-view';
 import NoListView from '../view/no-points-view.js';
-import {render} from '../render.js';
 import SortView from '../view/sort-view.js';
 
 export default class TripsPresenter {
