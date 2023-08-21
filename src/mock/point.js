@@ -1,5 +1,6 @@
 import {getRandomInteger} from '../utils/common.js';
 import {TYPES_TRANSPORT} from '../const.js';
+import {nanoid} from 'nanoid';
 
 const generateType = () => {
   const randomIndex = getRandomInteger(0, TYPES_TRANSPORT.length - 1);
@@ -37,7 +38,7 @@ export const generatePoint = () => ({
       }
     ]
   },
-  id: 0,
+  id: nanoid(),
   isFavorite: false,
   offers: [getRandomInteger(0, 5),getRandomInteger(0, 5),getRandomInteger(0, 5)],
   type: generateType()

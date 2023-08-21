@@ -11,6 +11,7 @@ export default class TripsPresenter {
   #sortComponent = new SortView();
   #noListComponent = new NoListView();
   #boardPoints = [];
+  #pointPresenter = new Map();
 
   constructor(container, pointsModel) {
     this.#container = container;
@@ -30,6 +31,7 @@ export default class TripsPresenter {
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#listComponent.element);
     pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderPoints = (from, to) => {
@@ -40,6 +42,11 @@ export default class TripsPresenter {
 
   #renderNoPoints = () => {
     render(this.#noListComponent, this.#container, RenderPosition.AFTERBEGIN);
+  };
+
+  #clearPointsList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   };
 
   #renderPointsList = () => {
