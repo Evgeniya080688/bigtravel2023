@@ -3,6 +3,7 @@ import ListView from '../view/list-view.js';
 import NoListView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
 import PointPresenter from './point-presenter.js';
+import {updateItem} from '../utils/common.js';
 
 export default class TripsPresenter {
   #container = null;
@@ -22,6 +23,11 @@ export default class TripsPresenter {
     this.#boardPoints = [...this.#pointsModel.points];
 
     this.#renderBoard();
+  };
+
+  #handlePointChange = (updatedPoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
   #renderSort = () => {
