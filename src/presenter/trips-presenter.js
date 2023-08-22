@@ -59,10 +59,9 @@ export default class TripsPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-
     this.#sortPoints(sortType);
-    // - Очищаем список
-    // - Рендерим список заново
+    this.#clearPointsList();
+    this.#renderPointsList();
   };
 
   #renderSort = () => {

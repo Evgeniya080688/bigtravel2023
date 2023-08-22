@@ -58,7 +58,7 @@ const sortPointsByTime = (pointA, pointB) => {
 };
 
 const sortPointsByPrice = (pointA, pointB) => {
-  return parseFloat(pointA.price) - parseFloat(pointB.price);
+  return parseFloat(pointB.basePrice) - parseFloat(pointA.basePrice);
 };
 
 export {humanizeDueDate, getHour, getMinutes, duration, beautyDate, isPointFuture, sortPointsByPrice, sortPointsByTime};
