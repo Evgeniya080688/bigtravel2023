@@ -13,6 +13,7 @@ const getHour = (dueDate) => {
   return dayjs(dueDate).format('HH');
 };
 const getMinutes = (dueDate) => dayjs(dueDate).format('mm');
+
 const duration = (dateFrom, dateTo) => {
   const due = dayjs(dateTo).diff(dayjs(dateFrom), 'm');
   let hours = '';
@@ -50,6 +51,16 @@ const duration = (dateFrom, dateTo) => {
 
 const isPointFuture = (dateFrom) =>dayjs(dateFrom).diff(dayjs(isToday), 'm');
 
-export {humanizeDueDate, getHour, getMinutes, duration, beautyDate, isPointFuture};
+const sortPointsByTime = (pointA, pointB) => {
+  const dueA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom), 'm');
+  const dueB = dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom), 'm');
+  return dueB - dueA;
+};
+
+const sortPointsByPrice = (pointA, pointB) => {
+  return parseFloat(pointA.price) - parseFloat(pointB.price);
+};
+
+export {humanizeDueDate, getHour, getMinutes, duration, beautyDate, isPointFuture, sortPointsByPrice, sortPointsByTime};
 
 
