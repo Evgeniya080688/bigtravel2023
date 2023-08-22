@@ -6,8 +6,15 @@ const FilterType = {
   PAST: 'Past'
 };
 
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price'
+};
+
 export {
   TRIP_COUNT,
   TYPES_TRANSPORT,
-  FilterType
+  FilterType,
+  SortType
 };
