@@ -18,8 +18,8 @@ const generateDestination = () => {
 
 export const generatePoint = () => ({
   basePrice: getRandomInteger(500,10000),
-  dateFrom: '2019-07-10T20:45:56.845Z',
-  dateTo: `2020-${getRandomInteger(10,11)}-12T22:55:13.375Z`,
+  dateFrom: `2019-0${getRandomInteger(1,9)}-10T20:45:56.845Z`,
+  dateTo: `2021-${getRandomInteger(10,11)}-12T22:55:13.375Z`,
   destination: {
     description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
     name: generateDestination(),

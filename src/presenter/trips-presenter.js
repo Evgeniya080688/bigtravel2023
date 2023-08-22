@@ -4,7 +4,7 @@ import NoListView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
-import {sortPointsByTime, sortPointsByPrice} from '../utils/point.js';
+import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/point.js';
 import {SortType} from '../const.js';
 
 export default class TripsPresenter {
@@ -24,9 +24,8 @@ export default class TripsPresenter {
   }
 
   init = () => {
-    this.#boardPoints = [...this.#pointsModel.points];
-    this.#sourcedBoardPoints = [...this.#pointsModel.points];
-
+    this.#boardPoints = [...this.#pointsModel.points].sort(sortPointsByDay);
+    this.#sourcedBoardPoints = [...this.#pointsModel.points].sort(sortPointsByDay);
     this.#renderBoard();
   };
 
@@ -103,6 +102,4 @@ export default class TripsPresenter {
     this.#renderSort();
     this.#renderPointsList();
   };
-
-
 }
