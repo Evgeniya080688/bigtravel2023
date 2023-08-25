@@ -9,7 +9,7 @@ dayjs.extend(timezone);
 const humanizeDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
 const beautyDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
 const getHour = (dueDate) => {
-  dueDate = dayjs(dueDate).tz('Europe/London');
+  dueDate = dayjs(dueDate);
   return dayjs(dueDate).format('HH');
 };
 const getMinutes = (dueDate) => dayjs(dueDate).format('mm');

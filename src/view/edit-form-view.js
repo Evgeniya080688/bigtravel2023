@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {beautyDate} from '../utils/point.js';
 import {getRandomInteger} from '../utils/common.js';
 import {offersByType}  from '../mock/offers-by-type.js';
@@ -19,9 +19,24 @@ const BLANK_POINT = {
   type:  TYPES_TRANSPORT[0]
 };
 
-const createEditFormTemplate = (point) => {
-  const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
+const createPointEditDateFromTemplate = (dateFrom, isDateFrom) => (
+  `${isDateFrom ? `<label class="visually-hidden" for="event-start-time-1">From</label>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateFrom)}">
+         ` : ''}`
+);
 
+const createPointEditDateToTemplate = (dateTo, isDateTo) => (
+  `${isDateTo ? `<label class="visually-hidden" for="event-start-time-1">To</label>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateTo)}">
+         ` : ''}`
+);
+
+
+const createEditFormTemplate = (point) => {
+  const {basePrice, dateFrom, dateTo, destination, type, offers, isDateFrom, isDateTo} = point;
+
+  const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom,isDateFrom);
+  const dateTemplateTo = createPointEditDateToTemplate(dateTo,isDateTo);
   const createOffers = () => {
     const pointTypeOffer = offersByType.find((item) => item.type === type);
     let offersSelected = '';
@@ -124,11 +139,9 @@ const createEditFormTemplate = (point) => {
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateFrom)}">
+          ${dateTemplateFrom}
           &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${beautyDate(dateTo)}">
+          ${dateTemplateTo}
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -159,7 +172,6 @@ const createEditFormTemplate = (point) => {
           <p class="event__destination-description">${destination.description}</p>
           <div class="event__photos-container">
             <div class="event__photos-tape">
-
               ${createPictures()}
             </div>
           </div>
@@ -170,15 +182,15 @@ const createEditFormTemplate = (point) => {
   );
 };
 
-export default class EditFormView extends AbstractView {
+export default class EditFormView extends AbstractStatefulView {
   #point = null;
   constructor(point = BLANK_POINT) {
     super();
-    this.#point = point;
+    this._state = EditFormView.parsePointToState(point);
   }
 
   get template() {
-    return createEditFormTemplate(this.#point);
+    return createEditFormTemplate(this._state);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -188,7 +200,7 @@ export default class EditFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditFormView.parseStateToPoint(this._state));
   };
 
   setEditClickHandler = (callback) => {
@@ -199,5 +211,27 @@ export default class EditFormView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick(this.#point);
+  };
+
+  static parsePointToState = (point) => ({...point,
+    isDateFrom: point.dateFrom !== null,
+    isDateTo: point.dateTo !== null,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = {...state};
+
+    if (!point.isDateFrom) {
+      point.dateFrom = null;
+    }
+
+    if (!point.isDateTo) {
+      point.dateTo = null;
+    }
+
+    delete point.isDateFrom;
+    delete point.isDateTo;
+
+    return point;
   };
 }
