@@ -27,7 +27,7 @@ const createPointEditDateFromTemplate = (dateFrom, isDateFrom) => (
 
 const createPointEditDateToTemplate = (dateTo, isDateTo) => (
   `${isDateTo ? `<label class="visually-hidden" for="event-start-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateTo)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-start-time" value="${beautyDate(dateTo)}">
          ` : ''}`
 );
 
@@ -187,11 +187,30 @@ export default class EditFormView extends AbstractStatefulView {
   constructor(point = BLANK_POINT) {
     super();
     this._state = EditFormView.parsePointToState(point);
+
+    this.element.querySelector('#event-start-time-1')
+      .addEventListener('click', this.#dateFromToggleHandler);
+    this.element.querySelector('#event-end-time-1')
+      .addEventListener('click', this.#dateToToggleHandler);
   }
 
   get template() {
     return createEditFormTemplate(this._state);
   }
+
+  #dateFromToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      isDateFrom: !this._state.isDateFrom,
+    });
+  };
+
+  #dateToToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      isDateTo: !this._state.isDateTo,
+    });
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
