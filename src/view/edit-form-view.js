@@ -220,6 +220,12 @@ export default class EditFormView extends AbstractStatefulView {
     });
   };
 
+  reset = (point) => {
+    this.updateElement(
+      EditFormView.parsePointToState(point),
+    );
+  };
+
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.addEventListener('submit', this.#formSubmitHandler);
@@ -253,9 +259,7 @@ export default class EditFormView extends AbstractStatefulView {
       .addEventListener('input', this.#destinationInputHandler);
   };
 
-  static parsePointToState = (point) => ({...point,
-
-  });
+  static parsePointToState = (point) => ({...point });
 
   static parseStateToPoint = (state) => {
     const point = {...state};
