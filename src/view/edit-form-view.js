@@ -1,7 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {beautyDate} from '../utils/point.js';
-import {getRandomInteger} from '../utils/common.js';
+import {getRandomInteger,capitalizeFirstLetter} from '../utils/common.js';
 import {offersByType}  from '../mock/offers-by-type.js';
+import {destinations} from '../mock/destinations.js';
 import {TYPES_TRANSPORT} from '../const.js';
 
 const BLANK_POINT = {
@@ -19,31 +20,25 @@ const BLANK_POINT = {
   type:  TYPES_TRANSPORT[0]
 };
 
-const createPointEditDateFromTemplate = (dateFrom, isDateFrom) => (
-  `${isDateFrom ? `<label class="visually-hidden" for="event-start-time-1">From</label>
+const createPointEditDateFromTemplate = (dateFrom) => (
+  `<label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateFrom)}">
-         ` : ''}`
+         `
 );
 
-const createPointEditDateToTemplate = (dateTo, isDateTo) => (
-  `${isDateTo ? `<label class="visually-hidden" for="event-start-time-1">To</label>
+const createPointEditDateToTemplate = (dateTo) => (
+  `<label class="visually-hidden" for="event-start-time-1">To</label>
           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-start-time" value="${beautyDate(dateTo)}">
-         ` : ''}`
+         `
 );
 
-
-const createEditFormTemplate = (point) => {
-  const {basePrice, dateFrom, dateTo, destination, type, offers, isDateFrom, isDateTo} = point;
-
-  const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom,isDateFrom);
-  const dateTemplateTo = createPointEditDateToTemplate(dateTo,isDateTo);
-  const createOffers = () => {
-    const pointTypeOffer = offersByType.find((item) => item.type === type);
-    let offersSelected = '';
-    pointTypeOffer.offers
-      .map((offer) => {
-        const checked = offers.includes(offer.id) ? 'checked': '';
-        offersSelected += `<div class="event__offer-selector">
+const createOffers = (type, offers) => {
+  const pointTypeOffer = offersByType.find((item) => item.type === type);
+  let offersSelected = '';
+  pointTypeOffer.offers
+    .map((offer) => {
+      const checked = offers.includes(offer.id) ? 'checked': '';
+      offersSelected += `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${checked}>
               <label class="event__offer-label" for="event-offer-${offer.id}">
                 <span class="event__offer-title">${offer.title}</span>
@@ -51,17 +46,57 @@ const createEditFormTemplate = (point) => {
                 <span class="event__offer-price">${offer.price}</span>
               </label>
             </div>`;
-      });
-    return offersSelected;
-  };
-  const createPictures = () => {
-    let picturesListElement = '';
-    const picturesArray = destination.pictures;
-    picturesArray.forEach((picture) => {
-      picturesListElement += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
     });
-    return picturesListElement ;
-  };
+  return offersSelected;
+};
+
+const createPictures = (destination) => {
+  let picturesListElement = '';
+  //const found =  destinations.find((item) => item.name === destination.name);
+  const picturesArray = destination.pictures;
+  picturesArray.forEach((picture) => {
+    picturesListElement += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+  });
+  return picturesListElement ;
+};
+
+const getPictures = (destinationName) => {
+  const found =  destinations.find((item) => item.name === destinationName);
+  return found.pictures;
+};
+
+const getDescripton = (destinationName) => {
+  const found =  destinations.find((item) => item.name === destinationName);
+  return found.description;
+};
+
+const createTypes = (types, currentType) => {
+  let typesList = '';
+  types.forEach((type) => {
+    const checked = (currentType === type) ? 'checked': '';
+    typesList +=`<div class="event__type-item">
+                <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${checked}>
+                <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeFirstLetter(type)}</label>
+              </div>`;
+  });
+  return typesList;
+};
+
+const createDestinations = (destinationsAll) => {
+  let destList = '';
+  destinationsAll.forEach((dest) => {
+    destList += `<option value="${dest.name}"></option>`;
+  });
+  return destList;
+};
+
+const createEditFormTemplate = (point) => {
+  const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
+
+  const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom);
+  const dateTemplateTo = createPointEditDateToTemplate(dateTo);
+  const offersTemplate = createOffers(type, offers);
+  const picturesTemplate = createPictures(destination);
 
   return (
     `
@@ -77,51 +112,7 @@ const createEditFormTemplate = (point) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-              </div>
+              ${createTypes(TYPES_TRANSPORT, type)}
             </fieldset>
           </div>
         </div>
@@ -132,9 +123,7 @@ const createEditFormTemplate = (point) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createDestinations(destinations)};
           </datalist>
         </div>
 
@@ -163,7 +152,7 @@ const createEditFormTemplate = (point) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOffers()}
+            ${offersTemplate}
           </div>
         </section>
 
@@ -172,7 +161,7 @@ const createEditFormTemplate = (point) => {
           <p class="event__destination-description">${destination.description}</p>
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              ${createPictures()}
+              ${picturesTemplate}
             </div>
           </div>
         </section>
@@ -187,28 +176,47 @@ export default class EditFormView extends AbstractStatefulView {
   constructor(point = BLANK_POINT) {
     super();
     this._state = EditFormView.parsePointToState(point);
-
-    this.element.querySelector('#event-start-time-1')
-      .addEventListener('click', this.#dateFromToggleHandler);
-    this.element.querySelector('#event-end-time-1')
-      .addEventListener('click', this.#dateToToggleHandler);
+    this.#setInnerHandlers();
   }
 
   get template() {
     return createEditFormTemplate(this._state);
   }
 
-  #dateFromToggleHandler = (evt) => {
+  #typeToggleHandler = (evt) => {
     evt.preventDefault();
-    this.updateElement({
-      isDateFrom: !this._state.isDateFrom,
+    // if (evt.target.tagName !== 'INPUT') {
+    //   return;
+    // }
+    this._setState({
+      type: document.querySelector(`#${evt.target.getAttribute('for')}`).value,
+      offers: ''
     });
+    this.updateElement({
+      type: document.querySelector(`#${evt.target.getAttribute('for')}`).value,
+      offers: ''
+    });
+
   };
 
-  #dateToToggleHandler = (evt) => {
+  #destinationInputHandler = (evt) => {
     evt.preventDefault();
+    if (evt.target.value === '') {
+      return;
+    }
+    this._setState({
+      destination: {
+        name: evt.target.value,
+        pictures: getPictures(evt.target.value),
+        description: getDescripton(evt.target.value),
+      },
+    });
     this.updateElement({
-      isDateTo: !this._state.isDateTo,
+      destination: {
+        name: evt.target.value,
+        pictures: getPictures(evt.target.value),
+        description: getDescripton(evt.target.value),
+      },
     });
   };
 
@@ -222,6 +230,12 @@ export default class EditFormView extends AbstractStatefulView {
     this._callback.formSubmit(EditFormView.parseStateToPoint(this._state));
   };
 
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditClickHandler(this._callback.editClick);
+  };
+
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
@@ -229,27 +243,22 @@ export default class EditFormView extends AbstractStatefulView {
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick(this.#point);
+    this._callback.editClick(this._state);
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-group')
+      .addEventListener('click', this.#typeToggleHandler);
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('input', this.#destinationInputHandler);
   };
 
   static parsePointToState = (point) => ({...point,
-    isDateFrom: point.dateFrom !== null,
-    isDateTo: point.dateTo !== null,
+
   });
 
   static parseStateToPoint = (state) => {
     const point = {...state};
-
-    if (!point.isDateFrom) {
-      point.dateFrom = null;
-    }
-
-    if (!point.isDateTo) {
-      point.dateTo = null;
-    }
-
-    delete point.isDateFrom;
-    delete point.isDateTo;
 
     return point;
   };
