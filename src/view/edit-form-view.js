@@ -4,6 +4,8 @@ import {getRandomInteger,capitalizeFirstLetter} from '../utils/common.js';
 import {offersByType}  from '../mock/offers-by-type.js';
 import {destinations} from '../mock/destinations.js';
 import {TYPES_TRANSPORT} from '../const.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   basePrice: getRandomInteger(500,10000),
@@ -185,15 +187,12 @@ export default class EditFormView extends AbstractStatefulView {
 
   #typeToggleHandler = (evt) => {
     evt.preventDefault();
-    // if (evt.target.tagName !== 'INPUT') {
-    //   return;
-    // }
     this._setState({
-      type: document.querySelector(`#${evt.target.getAttribute('for')}`).value,
+      type: evt.target.value,
       offers: ''
     });
     this.updateElement({
-      type: document.querySelector(`#${evt.target.getAttribute('for')}`).value,
+      type: evt.target.value,
       offers: ''
     });
 
@@ -253,8 +252,8 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-group')
-      .addEventListener('click', this.#typeToggleHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeToggleHandler);
+
     this.element.querySelector('.event__input--destination')
       .addEventListener('input', this.#destinationInputHandler);
   };
