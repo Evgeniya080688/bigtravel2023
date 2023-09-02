@@ -5,7 +5,9 @@ import {offersByType}  from '../mock/offers-by-type.js';
 import {destinations} from '../mock/destinations.js';
 import {TYPES_TRANSPORT} from '../const.js';
 import flatpickr from 'flatpickr';
+import confirmDatePlugin from 'flatpickr/dist/plugins/confirmDate/confirmDate.js';
 import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/plugins/confirmDate/confirmDate.css';
 
 const BLANK_POINT = {
   basePrice: getRandomInteger(500,10000),
@@ -174,16 +176,35 @@ const createEditFormTemplate = (point) => {
 };
 
 export default class EditFormView extends AbstractStatefulView {
-  #point = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
+
   constructor(point = BLANK_POINT) {
     super();
     this._state = EditFormView.parsePointToState(point);
     this.#setInnerHandlers();
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   }
 
   get template() {
     return createEditFormTemplate(this._state);
   }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более не нужный календарь
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom= null;
+    }
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo= null;
+    }
+  };
 
   #typeToggleHandler = (evt) => {
     evt.preventDefault();
@@ -237,6 +258,8 @@ export default class EditFormView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
   };
@@ -244,6 +267,45 @@ export default class EditFormView extends AbstractStatefulView {
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #setDatepickerFrom = () => {
+    this.#datepickerFrom = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        plugins: [new confirmDatePlugin({})],
+        dateFormat: 'd/m/y/ H:i',
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
+      },
+    );
+  };
+
+  #setDatepickerTo = () => {
+    this.#datepickerTo = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        plugins: [new confirmDatePlugin({})],
+        dateFormat: 'd/m/y/ H:i:s',
+        defaultDate: this._state.dateTo,
+        onChange: this.#dateToChangeHandler, // На событие flatpickr передаём наш колбэк
+      },
+    );
   };
 
   #editClickHandler = (evt) => {
