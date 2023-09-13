@@ -23,6 +23,10 @@ export default class TripsPresenter {
     this.#pointsModel = pointsModel;
   }
 
+  get points() {
+    return this.#pointsModel.points;
+  }
+
   init = () => {
     this.#boardPoints = [...this.#pointsModel.points].sort(sortPointsByDay);
     this.#sourcedBoardPoints = [...this.#pointsModel.points].sort(sortPointsByDay);
