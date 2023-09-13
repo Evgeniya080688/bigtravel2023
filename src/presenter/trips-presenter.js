@@ -21,6 +21,8 @@ export default class TripsPresenter {
   constructor(container, pointsModel) {
     this.#container = container;
     this.#pointsModel = pointsModel;
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -30,8 +32,24 @@ export default class TripsPresenter {
       case SortType.TIME:
         return [...this.#pointsModel.points].sort(sortPointsByTime);
     }
-    return this.#pointsModel.points;
+    return this.#pointsModel.points.sort(sortPointsByDay);
   }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  };
 
   init = () => {
 
@@ -51,7 +69,7 @@ export default class TripsPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#currentSortType(sortType);
+    this.#currentSortType = sortType;
     this.#clearPointsList();
     this.#renderPointsList();
   };
@@ -62,7 +80,7 @@ export default class TripsPresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#listComponent.element, this.#handlePointChange, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#listComponent.element, this.#handleViewAction, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
