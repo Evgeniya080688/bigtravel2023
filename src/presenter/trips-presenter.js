@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../framework/render.js';
+import {render, RenderPosition, remove} from '../framework/render.js';
 import ListView from '../view/list-view.js';
 import NoListView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
@@ -10,7 +10,7 @@ export default class TripsPresenter {
   #container = null;
   #pointsModel = null;
   #listComponent = new ListView();
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #noListComponent = new NoListView();
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
@@ -54,10 +54,12 @@ export default class TripsPresenter {
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда удалена точка маршрута)
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this.#clearBoard({resetRenderedPointCount: true, resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
@@ -81,13 +83,14 @@ export default class TripsPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#clearPointsList();
-    this.#renderPointsList();
+    this.#clearBoard({resetRenderedTaskCount: true});
+    this.#renderBoard();
   };
 
   #renderSort = () => {
-    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
+    this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   };
 
   #renderPoint = (point) => {
@@ -115,8 +118,21 @@ export default class TripsPresenter {
     this.#renderPoints(points);
   };
 
+  #clearBoard = ({resetSortType = false} = {}) => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noListComponent);
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
+  };
+
   #renderBoard = () => {
-    if (this.points.length <= 0) {
+    const points = this.points;
+    const pointsCount = points.length;
+    if (pointsCount === 0) {
       this.#renderNoPoints();
       return;
     }
