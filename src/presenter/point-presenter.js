@@ -38,6 +38,7 @@ export default class PointPresenter {
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setEditClickHandler(this.#handleCloseClick);
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#container);
@@ -105,12 +106,24 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (point) => {
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    const isMinorUpdate =
+      true;
     this.#changeData(
-      UserAction.UPDATE_TASK,
-      UpdateType.MINOR,
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       point,
     );
     this.#replaceFormToPoint();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   #handleCloseClick = () => {

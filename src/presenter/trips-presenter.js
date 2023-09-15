@@ -107,11 +107,6 @@ export default class TripsPresenter {
     render(this.#noListComponent, this.#container, RenderPosition.AFTERBEGIN);
   };
 
-  #clearPointsList = () => {
-    this.#pointPresenter.forEach((presenter) => presenter.destroy());
-    this.#pointPresenter.clear();
-  };
-
   #renderPointsList = () => {
     const points = this.points;
     render(this.#listComponent, this.#container);
