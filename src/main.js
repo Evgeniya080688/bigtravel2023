@@ -10,9 +10,8 @@ import InfoTripView from './view/info-trip-view.js';
 const siteTripEventsElement = document.querySelector('.trip-events');
 const siteTripMainElement = document.querySelector('.trip-main');
 const pointsModel = new PointsModel();
-const tripsPresenter = new TripsPresenter(siteTripEventsElement, pointsModel);
-
 const filterModel = new FilterModel();
+const tripsPresenter = new TripsPresenter(siteTripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteTripMainElement, filterModel, pointsModel);
 
 render(new InfoTripView(), siteTripMainElement);

@@ -3,7 +3,6 @@ import {SortType} from '../const.js';
 
 const createSortTemplate = (currentSortType) => {
   const isChecked = (currentType, thisSortType) => (currentType === thisSortType) ? 'checked' : '';
-  console.log(currentSortType);
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <div class="trip-sort__item  trip-sort__item--day">
@@ -71,7 +70,7 @@ export default class SortView extends AbstractView {
 
   setSortTypeChangeHandler = (callback) => {
     this._callback.sortTypeChange = callback;
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('change', this.#sortTypeChangeHandler);
   };
 
   #sortTypeChangeHandler = (evt) => {
