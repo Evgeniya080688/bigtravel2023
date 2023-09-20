@@ -12,7 +12,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
         type="radio"
         name="trip-filter"
         value="${type}">
-      <label class="trip-filters__filter-label" for="filter-future">${name}</label>
+      <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
     </div>`
   );
 };
@@ -55,8 +55,8 @@ export default class FilterView extends AbstractView {
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    console.log(evt.target);
-    //this._callback.filterTypeChange(evt.target.value);
+
+    this._callback.filterTypeChange(evt.target.value);
   };
 
 }

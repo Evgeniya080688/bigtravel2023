@@ -59,7 +59,6 @@ export default class TripsPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
@@ -117,6 +116,7 @@ export default class TripsPresenter {
 
   #renderNoPoints = () => {
     this.#noPointComponent = new NoListView(this.#filterType);
+    console.log(this.#filterType);
     render(this.#noListComponent, this.#container, RenderPosition.AFTERBEGIN);
   };
 

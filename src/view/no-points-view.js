@@ -11,7 +11,7 @@ const createNoPointsTemplate = (filterType) => {
   const noTaskTextValue = NoPointsTextType[filterType];
 
   return (
-    `<p class="trip-events__msg">${noTaskTextValue}</p>
+    `<p class="trip-events__msg">Click New Event to create your first point</p>
     `);
 };
 
