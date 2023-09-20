@@ -22,10 +22,16 @@ const createFilterTemplate = (filterItems, currentFilterType) => {
     .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');
 
-  return `<form class="trip-filters" action="#" method="get">
+  return (
+    `<div class="trip-main__trip-controls  trip-controls">
+      <div class="trip-controls__filters">
+        <h2 class="visually-hidden">Filter events</h2>
+            <form class="trip-filters" action="#" method="get">
             ${filterItemsTemplate}
             <button class="visually-hidden" type="submit">Accept filter</button>
-          </form>`;
+          </form>
+      </div>
+    </div>`);
 };
 
 export default class FilterView extends AbstractView {
