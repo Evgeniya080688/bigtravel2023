@@ -8,17 +8,24 @@ import InfoTripView from './view/info-trip-view.js';
 import FilterBlockView from './view/filter-block-view.js';
 import {generateFilter} from './mock/filter.js';
 
+const filters = [
+  {
+    type: 'everything',
+    name: 'EVERYTHING',
+    count: 0,
+  },
+];
+
 const siteTripEventsElement = document.querySelector('.trip-events');
 const siteTripMainElement = document.querySelector('.trip-main');
 const pointsModel = new PointsModel();
 const tripsPresenter = new TripsPresenter(siteTripEventsElement, pointsModel);
 const filterModel = new FilterModel();
-const filters = generateFilter(pointsModel.points);
 
 render(new InfoTripView(), siteTripMainElement);
 render(new FilterBlockView(), siteTripMainElement);
 const siteFilterElement = document.querySelector('.trip-controls__filters');
-render(new FilterView(filters), siteFilterElement);
+render(new FilterView(filters, 'everything'), siteFilterElement);
 render(new NewTaskButtonView, siteTripMainElement);
 
 tripsPresenter.init();
