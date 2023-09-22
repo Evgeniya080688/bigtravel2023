@@ -3,15 +3,16 @@ import {FilterType} from '../const.js';
 
 const NoPointsTextType = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
-  [FilterType.PAST]: 'Click New Event to create your first point',
-  [FilterType.FUTURE]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.FUTURE]: 'There are no future events now',
 };
 
 const createNoPointsTemplate = (filterType) => {
   const noTaskTextValue = NoPointsTextType[filterType];
+  console.log(filterType);
 
   return (
-    `<p class="trip-events__msg">Click New Event to create your first point</p>
+    `<p class="trip-events__msg">${noTaskTextValue}</p>
     `);
 };
 
