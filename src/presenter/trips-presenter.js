@@ -13,7 +13,6 @@ export default class TripsPresenter {
   #pointsModel = null;
   #pointNewPresenter = null;
   #filterModel = null;
-  #offersModel = null;
   #sortComponent = null;
   #listComponent = new ListView();
   #noListComponent = new NoListView();
@@ -21,11 +20,10 @@ export default class TripsPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  constructor(container, pointsModel, offersModel, filterModel) {
+  constructor(container, pointsModel, filterModel) {
     this.#container = container;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
-    this.#offersModel = offersModel;
     this.#pointNewPresenter = new PointNewPresenter(this.#listComponent, this.#handleViewAction);
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -50,7 +48,7 @@ export default class TripsPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointsModel.updatePoint (updateType, update);
         break;
       case UserAction.ADD_POINT:
         this.#pointsModel.addPoint(updateType, update);

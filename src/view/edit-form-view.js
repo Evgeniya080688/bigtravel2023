@@ -1,13 +1,13 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {beautyDate} from '../utils/point.js';
 import {getRandomInteger,capitalizeFirstLetter} from '../utils/common.js';
-import {offersByType}  from '../mock/offers-by-type.js';
 import {destinations} from '../mock/destinations.js';
 import {TYPES_TRANSPORT} from '../const.js';
 import flatpickr from 'flatpickr';
 import confirmDatePlugin from 'flatpickr/dist/plugins/confirmDate/confirmDate.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/plugins/confirmDate/confirmDate.css';
+import {nanoid} from 'nanoid';
 
 const BLANK_POINT = {
   basePrice: getRandomInteger(500,10000),
@@ -18,10 +18,31 @@ const BLANK_POINT = {
     name: '',
     pictures: []
   },
-  id: 0,
+  id: nanoid(),
   isFavorite: false,
-  offers: [getRandomInteger(0, 5),getRandomInteger(0, 5),getRandomInteger(0, 5)],
+  offers: [],
   type:  TYPES_TRANSPORT[0]
+};
+
+const BLANK_OFFERS = {
+  type: 'taxi',
+  offers: [
+    {
+      id: 1,
+      title: 'Upgrade to a business class',
+      price: 120
+    },
+    {
+      id: 2,
+      title: 'Add meal',
+      price: 15
+    },
+    {
+      id: 3,
+      title: 'Add luggage',
+      price: 30
+    },
+  ]
 };
 
 const createPointEditDateFromTemplate = (dateFrom) => (
@@ -36,10 +57,9 @@ const createPointEditDateToTemplate = (dateTo) => (
          `
 );
 
-const createOffers = (type, offers) => {
-  const pointTypeOffer = offersByType.find((item) => item.type === type);
+const createOffers = (type, offers, offersByType) => {
   let offersSelected = '';
-  pointTypeOffer.offers
+  offersByType.offers
     .map((offer) => {
       const checked = offers.includes(offer.id) ? 'checked': '';
       offersSelected += `<div class="event__offer-selector">
@@ -94,12 +114,12 @@ const createDestinations = (destinationsAll) => {
   return destList;
 };
 
-const createEditFormTemplate = (point) => {
+const createEditFormTemplate = (point, offersByType) => {
   const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
 
   const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom);
   const dateTemplateTo = createPointEditDateToTemplate(dateTo);
-  const offersTemplate = createOffers(type, offers);
+  const offersTemplate = createOffers(type, offers, offersByType);
   const picturesTemplate = createPictures(destination);
 
   return (
@@ -179,16 +199,17 @@ export default class EditFormView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor(point = BLANK_POINT) {
+  constructor(point = BLANK_POINT, offersByType = BLANK_OFFERS) {
     super();
     this._state = EditFormView.parsePointToState(point);
+    this._offers = offersByType;
     this.#setInnerHandlers();
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   }
 
   get template() {
-    return createEditFormTemplate(this._state);
+    return createEditFormTemplate(this._state, this._offers);
   }
 
   // Перегружаем метод родителя removeElement,
@@ -280,14 +301,27 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   };
 
-  #priceChangeHandler = (evt) => {
+  #changeOffersHandler = (evt) => {
     evt.preventDefault();
-    console.log(evt.target.value);
+    const checkedBoxes = document.querySelectorAll('.event__offer-checkbox:checked');
+    const offersSelected = [];
+    checkedBoxes.forEach((item) => offersSelected.push(Number(item.id.substr(12))));
+    console.log(offersSelected);
     this._setState({
-      price: evt.target.value,
+      offers: offersSelected,
     });
     this.updateElement({
-      price: evt.target.value,
+      offers: offersSelected,
+    });
+  };
+
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value,
+    });
+    this.updateElement({
+      basePrice: evt.target.value,
     });
   };
 
@@ -344,7 +378,8 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeToggleHandler);
     this.element.querySelector('.event__input--destination')
       .addEventListener('input', this.#destinationInputHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffersHandler);
   };
 
   static parsePointToState = (point) => ({...point });

@@ -11,4 +11,7 @@ export default class OffersModel extends Observable {
   set offers(update) {
     this.#offers = update;
   }
+
+  getByType = (type) => this.#offers.find((item) => item.type === type);
+
 }

@@ -1,6 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view';
 import PointView from '../view/point-view';
+import OffersModel from '../model/offers-model.js';
 import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
@@ -29,9 +30,10 @@ export default class PointPresenter {
     this.#point = point;
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
+    const offers = new OffersModel().getByType(this.#point.type);
 
     this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new EditFormView(point);
+    this.#pointEditComponent = new EditFormView(point, offers);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
