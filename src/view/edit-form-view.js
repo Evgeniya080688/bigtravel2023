@@ -24,27 +24,6 @@ const BLANK_POINT = {
   type:  TYPES_TRANSPORT[0]
 };
 
-const BLANK_OFFERS = {
-  type: 'taxi',
-  offers: [
-    {
-      id: 1,
-      title: 'Upgrade to a business class',
-      price: 120
-    },
-    {
-      id: 2,
-      title: 'Add meal',
-      price: 15
-    },
-    {
-      id: 3,
-      title: 'Add luggage',
-      price: 30
-    },
-  ]
-};
-
 const createPointEditDateFromTemplate = (dateFrom) => (
   `<label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateFrom)}">
@@ -57,9 +36,9 @@ const createPointEditDateToTemplate = (dateTo) => (
          `
 );
 
-const createOffers = (type, offers, offersByType) => {
+const createOffers = (type, offers, offersCurrent) => {
   let offersSelected = '';
-  offersByType.offers
+  offersCurrent.offers
     .map((offer) => {
       const checked = offers.includes(offer.id) ? 'checked': '';
       offersSelected += `<div class="event__offer-selector">
@@ -114,12 +93,13 @@ const createDestinations = (destinationsAll) => {
   return destList;
 };
 
-const createEditFormTemplate = (point, offersByType) => {
-  const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
+const createEditFormTemplate = (data) => {
+  const {basePrice, dateFrom, dateTo, destination, type, offers, offersCurrent} = data;
+  console.log(data);
 
   const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom);
   const dateTemplateTo = createPointEditDateToTemplate(dateTo);
-  const offersTemplate = createOffers(type, offers, offersByType);
+  const offersTemplate = createOffers(type, offers, offersCurrent);
   const picturesTemplate = createPictures(destination);
 
   return (
@@ -198,18 +178,19 @@ const createEditFormTemplate = (point, offersByType) => {
 export default class EditFormView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
+  #offersAll = null;
 
-  constructor(point = BLANK_POINT, offersByType = BLANK_OFFERS) {
+  constructor(offersAll, point = BLANK_POINT ) {
     super();
-    this._state = EditFormView.parsePointToState(point);
-    this._offers = offersByType;
+    this._state = EditFormView.parsePointToState(point,offersAll);
+    this.#offersAll = offersAll;
     this.#setInnerHandlers();
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   }
 
   get template() {
-    return createEditFormTemplate(this._state, this._offers);
+    return createEditFormTemplate(this._state);
   }
 
   // Перегружаем метод родителя removeElement,
@@ -231,13 +212,14 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     this._setState({
       type: evt.target.value,
-      offers: ''
+      offers: [],
+      offersCurrent: this.#offersAll.getByType(evt.target.value)
     });
     this.updateElement({
       type: evt.target.value,
-      offers: ''
+      offers: [],
+      offersCurrent: this.#offersAll.getByType(evt.target.value)
     });
-
   };
 
   #destinationInputHandler = (evt) => {
@@ -263,7 +245,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   reset = (point) => {
     this.updateElement(
-      EditFormView.parsePointToState(point),
+      EditFormView.parsePointToState(point, this.#offersAll),
     );
   };
 
@@ -306,7 +288,6 @@ export default class EditFormView extends AbstractStatefulView {
     const checkedBoxes = document.querySelectorAll('.event__offer-checkbox:checked');
     const offersSelected = [];
     checkedBoxes.forEach((item) => offersSelected.push(Number(item.id.substr(12))));
-    console.log(offersSelected);
     this._setState({
       offers: offersSelected,
     });
@@ -382,7 +363,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffersHandler);
   };
 
-  static parsePointToState = (point) => ({...point });
+  static parsePointToState = (point, offersAll) => ({...point, offersCurrent: offersAll.getByType(point.type) });
 
   static parseStateToPoint = (state) => {
     const point = {...state};

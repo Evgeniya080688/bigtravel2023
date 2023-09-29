@@ -2,6 +2,7 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
 import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
+import OffersModel from '../model/offers-model.js';
 
 export default class PointNewPresenter {
   #pointListContainer = null;
@@ -21,7 +22,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#pointEditComponent = new EditFormView();
+    this.#pointEditComponent = new EditFormView(new OffersModel());
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
