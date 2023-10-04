@@ -2,17 +2,18 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
 import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
-import OffersModel from '../model/offers-model.js';
 
 export default class PointNewPresenter {
   #pointListContainer = null;
   #changeData = null;
   #pointEditComponent = null;
   #destroyCallback = null;
+  #offersAll = null;
 
-  constructor(pointListContainer, changeData) {
+  constructor(pointListContainer, changeData, offersAll) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
+    this.#offersAll = offersAll;
   }
 
   init = (callback) => {
@@ -22,7 +23,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#pointEditComponent = new EditFormView(new OffersModel());
+    this.#pointEditComponent = new EditFormView(this.#offersAll);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 

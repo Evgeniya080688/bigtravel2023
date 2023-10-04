@@ -7,6 +7,7 @@ import PointPresenter from './point-presenter.js';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/point.js';
 import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import OffersModel from '../model/offers-model.js';
 
 export default class TripsPresenter {
   #container = null;
@@ -16,6 +17,7 @@ export default class TripsPresenter {
   #sortComponent = null;
   #listComponent = new ListView();
   #noListComponent = new NoListView();
+  #offersAll = new OffersModel();
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
@@ -24,7 +26,7 @@ export default class TripsPresenter {
     this.#container = container;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
-    this.#pointNewPresenter = new PointNewPresenter(this.#listComponent, this.#handleViewAction);
+    this.#pointNewPresenter = new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#offersAll);
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -112,7 +114,8 @@ export default class TripsPresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#listComponent.element, this.#handleViewAction, this.#handleModeChange);
+    const pointPresenter =
+      new PointPresenter(this.#listComponent.element, this.#handleViewAction, this.#handleModeChange, this.#offersAll);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };

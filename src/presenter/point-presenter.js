@@ -1,7 +1,6 @@
 import {render, replace, remove} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view';
 import PointView from '../view/point-view';
-import OffersModel from '../model/offers-model.js';
 import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
@@ -21,20 +20,19 @@ export default class PointPresenter {
   #offersAll = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, changeData, changeMode) {
+  constructor(pointListContainer, changeData, changeMode, offersAll) {
     this.#container = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#offersAll = offersAll;
   }
 
   init = (point) => {
     this.#point = point;
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
-
-    this.#offersAll = new OffersModel();
     this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new EditFormView(new OffersModel(), point);
+    this.#pointEditComponent = new EditFormView(this.#offersAll, point);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
