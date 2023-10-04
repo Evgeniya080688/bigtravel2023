@@ -2,6 +2,7 @@ import {render, RenderPosition, remove} from '../framework/render.js';
 import ListView from '../view/list-view.js';
 import NoListView from '../view/no-points-view.js';
 import PointNewPresenter from './point-new-presenter.js';
+import LoadingView from '../view/loading-view.js';
 import SortView from '../view/sort-view.js';
 import PointPresenter from './point-presenter.js';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/point.js';
@@ -18,9 +19,11 @@ export default class TripsPresenter {
   #listComponent = new ListView();
   #noListComponent = new NoListView();
   #offersAll = new OffersModel();
+  #loadingComponent = new LoadingView();
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor(container, pointsModel, filterModel) {
     this.#container = container;
@@ -43,6 +46,11 @@ export default class TripsPresenter {
         return filteredPoints.sort(sortPointsByTime);
       case SortType.DAY:
         return filteredPoints.sort(sortPointsByDay);
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
     return filteredPoints;
   }
@@ -120,13 +128,17 @@ export default class TripsPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#container, RenderPosition.AFTERBEGIN);
+  };
+
   #renderPoints = (points) => {
     points.forEach((point) => this.#renderPoint(point));
   };
 
   #renderNoPoints = () => {
     this.#noListComponent = new NoListView(this.#filterType);
-    render(this.#noListComponent, this.#container, RenderPosition.AFTERBEGIN);
+    render(this.#noListComponent, this.#container, RenderPosition.BEFOREEND);
   };
 
   #renderPointsList = () => {
@@ -141,12 +153,13 @@ export default class TripsPresenter {
     this.#pointNewPresenter.destroy();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     if (this.#noListComponent) {
       remove(this.#noListComponent);
     }
 
     if (resetSortType) {
-      this.#currentSortType = SortType.DEFAULT;
+      this.#currentSortType = SortType.DAY;
     }
     if (this.#noListComponent) {
       remove(this.#noListComponent);
@@ -154,8 +167,13 @@ export default class TripsPresenter {
   };
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     const points = this.points;
     const pointsCount = points.length;
+
     if (pointsCount === 0) {
       this.#renderNoPoints();
       return;
