@@ -32,5 +32,6 @@ render(newPointButtonComponent, siteTripMainElement);
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 
 tripsPresenter.init();
+pointsModel.init();
 
 
