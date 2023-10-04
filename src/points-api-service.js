@@ -5,13 +5,13 @@ const Method = {
   PUT: 'PUT',
 };
 
-export default class TasksApiService extends ApiService {
+export default class PointsApiService extends ApiService {
   get points() {
     return this._load({url: 'points'})
       .then(ApiService.parseResponse);
   }
 
-  updateTask = async (point) => {
+  updatePoint = async (point) => {
     const response = await this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
