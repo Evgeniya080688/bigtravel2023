@@ -46,11 +46,6 @@ export default class TripsPresenter {
         return filteredPoints.sort(sortPointsByTime);
       case SortType.DAY:
         return filteredPoints.sort(sortPointsByDay);
-      case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderBoard();
-        break;
     }
     return filteredPoints;
   }
@@ -81,6 +76,11 @@ export default class TripsPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetRenderedPointCount: true, resetSortType: true});
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }
