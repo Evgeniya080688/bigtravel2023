@@ -24,14 +24,15 @@ const handleNewPointFormClose = () => {
 
 const handleNewPointButtonClick = () => {
   tripsPresenter.createPoint(handleNewPointFormClose);
-  newPointButtonComponent.element.disabled = true;
+  newPointButtonComponent.element.disabled = false;
 };
 render(new InfoTripView(), siteTripMainElement);
 filterPresenter.init();
-render(newPointButtonComponent, siteTripMainElement);
-newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+// render(newPointButtonComponent, siteTripMainElement);
+// newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 
 tripsPresenter.init();
-pointsModel.init();
-
-
+pointsModel.init().finally(() => {
+  render(newPointButtonComponent, siteTripMainElement);
+  newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+});
