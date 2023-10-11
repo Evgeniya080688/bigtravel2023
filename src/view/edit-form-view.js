@@ -1,13 +1,11 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {beautyDate} from '../utils/point.js';
 import {getRandomInteger,capitalizeFirstLetter} from '../utils/common.js';
-import {destinations} from '../mock/destinations.js';
 import {TYPES_TRANSPORT} from '../const.js';
 import flatpickr from 'flatpickr';
 import confirmDatePlugin from 'flatpickr/dist/plugins/confirmDate/confirmDate.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/plugins/confirmDate/confirmDate.css';
-import {nanoid} from 'nanoid';
 
 const BLANK_POINT = {
   basePrice: getRandomInteger(500,10000),
@@ -18,7 +16,6 @@ const BLANK_POINT = {
     name: '',
     pictures: []
   },
-  id: nanoid(),
   isFavorite: false,
   offers: [],
   type:  TYPES_TRANSPORT[0]
@@ -63,12 +60,12 @@ const createPictures = (destination) => {
   return picturesListElement ;
 };
 
-const getPictures = (destinationName) => {
+const getPictures = (destinationName, destinations) => {
   const found =  destinations.find((item) => item.name === destinationName);
   return found.pictures;
 };
 
-const getDescripton = (destinationName) => {
+const getDescripton = (destinationName, destinations) => {
   const found =  destinations.find((item) => item.name === destinationName);
   return found.description;
 };
@@ -85,16 +82,16 @@ const createTypes = (types, currentType) => {
   return typesList;
 };
 
-const createDestinations = (destinationsAll) => {
+const createDestinations = (destinations) => {
   let destList = '';
-  destinationsAll.forEach((dest) => {
+  destinations.forEach((dest) => {
     destList += `<option value="${dest.name}"></option>`;
   });
   return destList;
 };
 
 const createEditFormTemplate = (data) => {
-  const {basePrice, dateFrom, dateTo, destination, type, offers, offersCurrent} = data;
+  const {basePrice, dateFrom, dateTo, destination, type, offers, destinations, offersCurrent} = data;
   console.log(data);
 
   const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom);
@@ -179,11 +176,13 @@ export default class EditFormView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
   #offersAll = null;
+  #destinations = null;
 
-  constructor(offersAll, point = BLANK_POINT ) {
+  constructor(offersAll, destinations, point = BLANK_POINT ) {
     super();
-    this._state = EditFormView.parsePointToState(point,offersAll);
+    this._state = EditFormView.parsePointToState(point, destinations, offersAll);
     this.#offersAll = offersAll;
+    this.#destinations = destinations;
     this.#setInnerHandlers();
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
@@ -245,7 +244,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   reset = (point) => {
     this.updateElement(
-      EditFormView.parsePointToState(point, this.#offersAll),
+      EditFormView.parsePointToState(point, this.#destinations, this.#offersAll),
     );
   };
 
@@ -363,7 +362,8 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffersHandler);
   };
 
-  static parsePointToState = (point, offersAll) => ({...point, offersCurrent: offersAll.getByType(point.type) });
+  static parsePointToState = (point, destinations, offersAll) =>
+    ({...point, destinations: destinations.destinations, offersCurrent: offersAll.getByType(point.type) });
 
   static parseStateToPoint = (state) => {
     const point = {...state};

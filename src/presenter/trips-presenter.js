@@ -9,6 +9,9 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/poi
 import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 import OffersModel from '../model/offers-model.js';
+import DestinationsModel from '../model/dest-model.js';
+import DestinationsApiService from '../destinations-api-service.js';
+import {END_POINT,AUTHORIZATION} from '../const.js';
 
 export default class TripsPresenter {
   #container = null;
@@ -19,19 +22,27 @@ export default class TripsPresenter {
   #listComponent = new ListView();
   #noListComponent = new NoListView();
   #offersAll = new OffersModel();
+  #destinationsModel = null;
+  #destinations = new DestinationsModel(new DestinationsApiService(END_POINT, AUTHORIZATION));
   #loadingComponent = new LoadingView();
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
 
-  constructor(container, pointsModel, filterModel) {
+  constructor(container, pointsModel, filterModel, destModel) {
     this.#container = container;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
-    this.#pointNewPresenter = new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#offersAll);
+    this.#destinationsModel = destModel;
+    destModel.init();
+    destModel.addObserver(this.#handleModelEvent);
+    this.#destinations = destModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#pointNewPresenter =
+      new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#offersAll, this.#destinations);
+    console.log(destModel);
   }
 
   get points() {
@@ -123,7 +134,12 @@ export default class TripsPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter =
-      new PointPresenter(this.#listComponent.element, this.#handleViewAction, this.#handleModeChange, this.#offersAll);
+      new PointPresenter(
+        this.#listComponent.element,
+        this.#handleViewAction,
+        this.#handleModeChange,
+        this.#offersAll,
+        this.#destinations);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };

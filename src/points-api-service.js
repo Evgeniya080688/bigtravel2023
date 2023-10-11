@@ -26,9 +26,9 @@ export default class PointsApiService extends ApiService {
     return parsedResponse;
   };
 
-  deleteTask = async (task) => {
+  deletePoint = async (point) => {
     const response = await this._load({
-      url: `tasks/${task.id}`,
+      url: `points/${point.id}`,
       method: Method.DELETE,
     });
 

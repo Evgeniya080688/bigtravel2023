@@ -25,11 +25,18 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
+const AUTHORIZATION = 'Basic 5kgjl7dinkljwf';
+const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
+
 export {
   TRIP_COUNT,
   TYPES_TRANSPORT,
   FilterType,
   SortType,
   UserAction,
-  UpdateType
+  UpdateType,
+  AUTHORIZATION,
+  END_POINT
 };
+
+
