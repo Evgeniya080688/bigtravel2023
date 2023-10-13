@@ -34,7 +34,7 @@ filterPresenter.init();
 // newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 
 tripsPresenter.init();
-destModel.init();
+
 pointsModel.init().finally(() => {
   render(newPointButtonComponent, siteTripMainElement);
   newPointButtonComponent.setClickHandler(handleNewPointButtonClick);

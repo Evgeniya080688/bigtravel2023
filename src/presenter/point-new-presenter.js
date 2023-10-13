@@ -1,29 +1,31 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
 import {UserAction, UpdateType} from '../const.js';
+import {destinations} from "../mock/destinations";
 
 export default class PointNewPresenter {
   #pointListContainer = null;
   #changeData = null;
   #pointEditComponent = null;
-  #destroyCallback = null;
+  #handleDestroy = null;
   #offersAll = null;
+  #destinationsModel = null;
   #destinations = null;
 
-  constructor(pointListContainer, changeData, offersAll, destinations) {
+  constructor(pointListContainer, changeData, onDestroy, offersAll, destinationsModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
+    this.#handleDestroy = onDestroy;
     this.#offersAll = offersAll;
-    this.#destinations = destinations;
+    this.#destinationsModel = destinationsModel;
   }
 
-  init = (callback) => {
-    this.#destroyCallback = callback;
-
+  init = () => {
     if (this.#pointEditComponent !== null) {
       return;
     }
-
+    this.#destinations = this.#destinationsModel.destinations;
+    console.log(this.#destinations);
     this.#pointEditComponent = new EditFormView(this.#offersAll, this.#destinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
@@ -38,12 +40,24 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#destroyCallback?.();
+    this.#handleDestroy();
 
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  get destinations() {
+    return this.#destinationsModel.destinations;
+  }
+
+  #handleModelEvent = (updateType) => {
+    switch (updateType) {
+      case UpdateType.INIT:
+        this.#destinations = this.destinations;
+        console.log(this.#destinations);
+    }
   };
 
   #handleFormSubmit = (point) => {

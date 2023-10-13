@@ -180,9 +180,9 @@ export default class EditFormView extends AbstractStatefulView {
 
   constructor(offersAll, destinations, point = BLANK_POINT ) {
     super();
-    this._state = EditFormView.parsePointToState(point, destinations, offersAll);
-    this.#offersAll = offersAll;
     this.#destinations = destinations;
+    this.#offersAll = offersAll;
+    this._state = EditFormView.parsePointToState(point, destinations, offersAll);
     this.#setInnerHandlers();
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
@@ -229,15 +229,15 @@ export default class EditFormView extends AbstractStatefulView {
     this._setState({
       destination: {
         name: evt.target.value,
-        pictures: getPictures(evt.target.value),
-        description: getDescripton(evt.target.value),
+        pictures: getPictures(evt.target.value, this.#destinations),
+        description: getDescripton(evt.target.value, this.#destinations),
       },
     });
     this.updateElement({
       destination: {
         name: evt.target.value,
-        pictures: getPictures(evt.target.value),
-        description: getDescripton(evt.target.value),
+        pictures: getPictures(evt.target.value, this.#destinations),
+        description: getDescripton(evt.target.value, this.#destinations),
       },
     });
   };
@@ -363,7 +363,7 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   static parsePointToState = (point, destinations, offersAll) =>
-    ({...point, destinations: destinations.destinations, offersCurrent: offersAll.getByType(point.type) });
+    ({...point, destinations, offersCurrent: offersAll.getByType(point.type) });
 
   static parseStateToPoint = (state) => {
     const point = {...state};

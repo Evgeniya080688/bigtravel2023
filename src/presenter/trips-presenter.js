@@ -9,40 +9,39 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/poi
 import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 import OffersModel from '../model/offers-model.js';
-import DestinationsModel from '../model/dest-model.js';
-import DestinationsApiService from '../destinations-api-service.js';
-import {END_POINT,AUTHORIZATION} from '../const.js';
 
 export default class TripsPresenter {
   #container = null;
   #pointsModel = null;
-  #pointNewPresenter = null;
   #filterModel = null;
   #sortComponent = null;
   #listComponent = new ListView();
   #noListComponent = new NoListView();
   #offersAll = new OffersModel();
   #destinationsModel = null;
-  #destinations = new DestinationsModel(new DestinationsApiService(END_POINT, AUTHORIZATION));
+  #destinations = null;
   #loadingComponent = new LoadingView();
   #pointPresenter = new Map();
+  #pointNewPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
 
   constructor(container, pointsModel, filterModel, destModel) {
     this.#container = container;
+    this.#destinationsModel = destModel;
+    this.#destinationsModel.init();
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
-    this.#destinationsModel = destModel;
-    destModel.init();
-    destModel.addObserver(this.#handleModelEvent);
-    this.#destinations = destModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#destinationsModel.addObserver(this.#handleModelEvent);
     this.#pointNewPresenter =
-      new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#offersAll, this.#destinations);
-    console.log(destModel);
+     new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#handleModeChange, this.#offersAll, this.#destinationsModel);
+  }
+
+  get destinations() {
+    return this.#destinationsModel.destinations;
   }
 
   get points() {
@@ -93,6 +92,7 @@ export default class TripsPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
+        this.#destinations = this.destinations;
         break;
     }
   };
@@ -189,7 +189,6 @@ export default class TripsPresenter {
     }
     const points = this.points;
     const pointsCount = points.length;
-
     if (pointsCount === 0) {
       this.#renderNoPoints();
       return;

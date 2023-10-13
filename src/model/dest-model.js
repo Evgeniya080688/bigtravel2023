@@ -21,7 +21,6 @@ export default class DestinationsModel extends Observable {
     try {
       const destinationsAll = await this.#destinationsApiService.destinations;
       this.#destinations = destinationsAll;
-      console.log(this.#destinations);
     } catch(err) {
       this.#destinations = [];
     }
