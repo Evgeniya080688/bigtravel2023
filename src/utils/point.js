@@ -49,7 +49,7 @@ const duration = (dateFrom, dateTo) => {
   }
 };
 
-const isPointFuture = (dateFrom) =>dayjs(dateFrom).diff(dayjs(isToday), 'm');
+const isPointFuture = (dateTo) => dayjs(dateTo).diff(dayjs(new Date()), 'm');
 
 const sortPointsByTime = (pointA, pointB) => {
   const dueA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom), 'm');

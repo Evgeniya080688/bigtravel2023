@@ -19,7 +19,7 @@ export default class TripsPresenter {
   #noListComponent = new NoListView();
   #offersAll = new OffersModel();
   #destinationsModel = null;
-  #destinations = null;
+  #offersModel = null;
   #loadingComponent = new LoadingView();
   #pointPresenter = new Map();
   #pointNewPresenter = null;
@@ -27,17 +27,17 @@ export default class TripsPresenter {
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
 
-  constructor(container, pointsModel, filterModel, destModel) {
+  constructor(container, pointsModel, filterModel, destModel, offersModel) {
     this.#container = container;
     this.#destinationsModel = destModel;
-    this.#destinationsModel.init();
+    this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#destinationsModel.addObserver(this.#handleModelEvent);
     this.#pointNewPresenter =
-     new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#handleModeChange, this.#offersAll, this.#destinationsModel);
+     new PointNewPresenter(this.#listComponent, this.#handleViewAction, this.#offersModel, this.#destinationsModel);
   }
 
   get destinations() {
@@ -91,8 +91,8 @@ export default class TripsPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#clearBoard();
         this.#renderBoard();
-        this.#destinations = this.destinations;
         break;
     }
   };
@@ -138,8 +138,8 @@ export default class TripsPresenter {
         this.#listComponent.element,
         this.#handleViewAction,
         this.#handleModeChange,
-        this.#offersAll,
-        this.#destinations);
+        this.#offersModel,
+        this.#destinationsModel);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };

@@ -1,7 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
 import {UserAction, UpdateType} from '../const.js';
-import {destinations} from "../mock/destinations";
 
 export default class PointNewPresenter {
   #pointListContainer = null;
@@ -9,23 +8,25 @@ export default class PointNewPresenter {
   #pointEditComponent = null;
   #handleDestroy = null;
   #offersAll = null;
+  #offersModel = null;
   #destinationsModel = null;
   #destinations = null;
+  #destroyCallback = null;
 
-  constructor(pointListContainer, changeData, onDestroy, offersAll, destinationsModel) {
+  constructor(pointListContainer, changeData, offersModel, destinationsModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
-    this.#handleDestroy = onDestroy;
-    this.#offersAll = offersAll;
+    this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
   }
 
-  init = () => {
+  init = (callback) => {
+    this.#destroyCallback = callback;
     if (this.#pointEditComponent !== null) {
       return;
     }
     this.#destinations = this.#destinationsModel.destinations;
-    console.log(this.#destinations);
+    this.#offersAll = this.#offersModel.offers;
     this.#pointEditComponent = new EditFormView(this.#offersAll, this.#destinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
@@ -40,7 +41,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#handleDestroy();
+    this.#destroyCallback?.();
 
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
