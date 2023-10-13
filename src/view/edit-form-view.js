@@ -35,6 +35,7 @@ const createPointEditDateToTemplate = (dateTo) => (
 
 const createOffers = (type, offers, offersCurrent) => {
   let offersSelected = '';
+  console.log(offersCurrent);
   offersCurrent.offers
     .map((offer) => {
       const checked = offers.includes(offer.id) ? 'checked': '';
@@ -182,7 +183,6 @@ export default class EditFormView extends AbstractStatefulView {
     super();
     this.#destinations = destinations;
     this.#offersAll = offersAll;
-    console.log(this.#offersAll);
     this._state = EditFormView.parsePointToState(point, destinations, offersAll);
     this.#setInnerHandlers();
     this.#setDatepickerFrom();
