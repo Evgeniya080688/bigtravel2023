@@ -21,15 +21,17 @@ const BLANK_POINT = {
   type:  TYPES_TRANSPORT[0]
 };
 
-const createPointEditDateFromTemplate = (dateFrom) => (
+const createPointEditDateFromTemplate = (dateFrom, isDisabled) => (
   `<label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${beautyDate(dateFrom)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
+          value="${beautyDate(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
          `
 );
 
-const createPointEditDateToTemplate = (dateTo) => (
+const createPointEditDateToTemplate = (dateTo, isDisabled) => (
   `<label class="visually-hidden" for="event-start-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-start-time" value="${beautyDate(dateTo)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-start-time"
+          value="${beautyDate(dateTo)}" ${isDisabled ? 'disabled' : ''}>
          `
 );
 
@@ -66,7 +68,7 @@ const getPictures = (destinationName, destinations) => {
   return found.pictures;
 };
 
-const getDescripton = (destinationName, destinations) => {
+const getDescription = (destinationName, destinations) => {
   const found =  destinations.find((item) => item.name === destinationName);
   return found.description;
 };
@@ -92,11 +94,22 @@ const createDestinations = (destinations) => {
 };
 
 const createEditFormTemplate = (data) => {
-  const {basePrice, dateFrom, dateTo, destination, type, offers, destinations, offersCurrent} = data;
-  console.log(data);
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination,
+    type,
+    offers,
+    destinations,
+    offersCurrent,
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = data;
 
-  const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom);
-  const dateTemplateTo = createPointEditDateToTemplate(dateTo);
+  const dateTemplateFrom = createPointEditDateFromTemplate(dateFrom, isDisabled);
+  const dateTemplateTo = createPointEditDateToTemplate(dateTo, isDisabled);
   const offersTemplate = createOffers(type, offers, offersCurrent);
   const picturesTemplate = createPictures(destination);
 
@@ -109,10 +122,10 @@ const createEditFormTemplate = (data) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
-            <fieldset class="event__type-group">
+            <fieldset class="event__type-group" ${isDisabled ? 'disabled' : ''}>
               <legend class="visually-hidden">Event type</legend>
               ${createTypes(TYPES_TRANSPORT, type)}
             </fieldset>
@@ -123,7 +136,8 @@ const createEditFormTemplate = (data) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"
+          value="${destination.name}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
           <datalist id="destination-list-1">
             ${createDestinations(destinations)};
           </datalist>
@@ -140,12 +154,17 @@ const createEditFormTemplate = (data) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"
+          value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+            ${isSaving ? 'saving...' : 'save'}
+        </button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+            ${isDeleting ? 'deleting...' : 'delete'}
+        </button>
+        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
@@ -231,14 +250,14 @@ export default class EditFormView extends AbstractStatefulView {
       destination: {
         name: evt.target.value,
         pictures: getPictures(evt.target.value, this.#destinations),
-        description: getDescripton(evt.target.value, this.#destinations),
+        description: getDescription(evt.target.value, this.#destinations),
       },
     });
     this.updateElement({
       destination: {
         name: evt.target.value,
         pictures: getPictures(evt.target.value, this.#destinations),
-        description: getDescripton(evt.target.value, this.#destinations),
+        description: getDescription(evt.target.value, this.#destinations),
       },
     });
   };
@@ -363,11 +382,22 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffersHandler);
   };
 
-  static parsePointToState = (point, destinations, offersAll) =>
-    ({...point, destinations, offersCurrent: offersAll.getByType(point.type) });
+  static parsePointToState = (point, destinations, offersAll) => ({...point,
+    destinations,
+    offersCurrent: offersAll.getByType(point.type),
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
 
   static parseStateToPoint = (state) => {
     const point = {...state};
+
+    delete point.destinations;
+    delete point.offersCurrent;
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   };

@@ -17,7 +17,6 @@ export default class PointPresenter {
   #pointEditComponent = null;
 
   #point = null;
-  #offersAll = null;
   #offersModel = null;
   #destinationsModel = null;
   #destinations = null;
@@ -36,9 +35,6 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
     this.#destinations = this.#destinationsModel.destinations;
-    this.#offersAll = this.#offersModel.offers;
-    console.log(this.#offersAll);
-    console.log(this.#offersModel.getByType(point.type));
     this.#pointComponent = new PointView(point);
     this.#pointEditComponent = new EditFormView(this.#offersModel, this.#destinations, point);
 
