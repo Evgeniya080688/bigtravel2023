@@ -37,7 +37,6 @@ const createPointEditDateToTemplate = (dateTo, isDisabled) => (
 
 const createOffers = (type, offers, offersCurrent) => {
   let offersSelected = '';
-  console.log(offersCurrent);
   offersCurrent.offers
     .map((offer) => {
       const checked = offers.includes(offer.id) ? 'checked': '';
@@ -50,6 +49,7 @@ const createOffers = (type, offers, offersCurrent) => {
               </label>
             </div>`;
     });
+  console.log(offersCurrent);
   return offersSelected;
 };
 
@@ -169,7 +169,8 @@ const createEditFormTemplate = (data) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
+
+        <section class="event__section  event__section--offers" style = "${offersCurrent.offers.length ? '' : 'display:none'}">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
@@ -177,7 +178,7 @@ const createEditFormTemplate = (data) => {
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
+        <section class="event__section  event__section--destination" style = "${destination.description ? '' : 'display:none'}">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
           <div class="event__photos-container">
