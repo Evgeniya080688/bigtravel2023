@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {beautyDate} from '../utils/point.js';
+import {beautyDate,compareDates} from '../utils/point.js';
 import {getRandomInteger,capitalizeFirstLetter} from '../utils/common.js';
 import {TYPES_TRANSPORT} from '../const.js';
 import flatpickr from 'flatpickr';
@@ -49,7 +49,6 @@ const createOffers = (type, offers, offersCurrent) => {
               </label>
             </div>`;
     });
-  console.log(offersCurrent);
   return offersSelected;
 };
 
@@ -307,7 +306,9 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     const checkedBoxes = document.querySelectorAll('.event__offer-checkbox:checked');
     const offersSelected = [];
-    checkedBoxes.forEach((item) => offersSelected.push(Number(item.id.substr(12))));
+    checkedBoxes.forEach((item) => {
+      offersSelected.push(Number(item.id.substr(12)));
+    });
     this._setState({
       offers: offersSelected,
     });
@@ -319,28 +320,28 @@ export default class EditFormView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
     this.updateElement({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
   };
 
   #dateFromChangeHandler = ([userDate]) => {
     this._setState({
-      dateFrom: userDate,
+      dateFrom: compareDates(this._state.dateTo, userDate) ? userDate: this._state.dateTo,
     });
     this.updateElement({
-      dateFrom: userDate,
+      dateFrom: compareDates(this._state.dateTo, userDate) ? userDate: this._state.dateTo,
     });
   };
 
   #dateToChangeHandler = ([userDate]) => {
     this._setState({
-      dateTo: userDate,
+      dateTo: compareDates(userDate, this._state.dateFrom) ? userDate: this._state.dateFrom,
     });
     this.updateElement({
-      dateTo: userDate,
+      dateTo: compareDates(userDate, this._state.dateFrom) ? userDate: this._state.dateFrom,
     });
   };
 

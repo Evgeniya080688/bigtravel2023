@@ -7,6 +7,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const humanizeDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
+const humanizeDueDateShort = (dueDate) => dayjs(dueDate).format('D MMM');
 const beautyDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
 const getHour = (dueDate) => {
   dueDate = dayjs(dueDate);
@@ -49,7 +50,8 @@ const duration = (dateFrom, dateTo) => {
   }
 };
 
-const isPointFuture = (dateTo) => dayjs(dateTo).diff(dayjs(new Date()), 'm');
+const isPointFuture = (dateTo) => (dayjs(dateTo).diff(dayjs(new Date()), 'm') > 0) ;
+const compareDates = (dateFrom, dateTo) => (dayjs(dateTo).diff(dayjs(dateFrom), 'm') < 0);
 
 const sortPointsByTime = (pointA, pointB) => {
   const dueA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom), 'm');
@@ -65,10 +67,6 @@ const sortPointsByDay = (pointA, pointB) => {
   return dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom), 'm');
 };
 
-const findIdOfferByTitle = (title, offers) => {
-
-}
-
-export {humanizeDueDate, getHour, getMinutes, duration, beautyDate, isPointFuture, sortPointsByPrice, sortPointsByTime, sortPointsByDay};
+export {humanizeDueDateShort, humanizeDueDate, getHour, getMinutes, duration, beautyDate, compareDates, isPointFuture, sortPointsByPrice, sortPointsByTime, sortPointsByDay};
 
 

@@ -9,7 +9,6 @@ import PointPresenter from './point-presenter.js';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/point.js';
 import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
-import OffersModel from '../model/offers-model.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -23,7 +22,6 @@ export default class TripsPresenter {
   #sortComponent = null;
   #listComponent = new ListView();
   #noListComponent = new NoListView();
-  #offersAll = new OffersModel();
   #destinationsModel = null;
   #offersModel = null;
   #loadingComponent = new LoadingView();
@@ -135,11 +133,6 @@ export default class TripsPresenter {
   #handleModeChange = () => {
     this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
-  };
-
-  #handlePointChange = (updatedPoint) => {
-    // Здесь будем вызывать обновление модели
-    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
   #handleSortTypeChange = (sortType) => {

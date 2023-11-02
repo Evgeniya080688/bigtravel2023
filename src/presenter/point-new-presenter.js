@@ -28,6 +28,7 @@ export default class PointNewPresenter {
     this.#pointEditComponent = new EditFormView(this.#offersModel, this.#destinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#pointEditComponent.setEditClickHandler(this.#handleDeleteClick);
 
     render(this.#pointEditComponent, this.#pointListContainer.element, RenderPosition.AFTERBEGIN);
 
@@ -55,7 +56,6 @@ export default class PointNewPresenter {
     switch (updateType) {
       case UpdateType.INIT:
         this.#destinations = this.destinations;
-        console.log(this.#destinations);
     }
   };
 

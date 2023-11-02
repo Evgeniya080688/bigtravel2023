@@ -1,36 +1,30 @@
 import {humanizeDueDate, getHour, getMinutes, duration} from '../utils/point.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import {offersByType} from '../mock/offers-by-type.js';
 
-const createPointTemplate = (point) => {
-  const {basePrice, dateFrom, dateTo, destination, type, offers, isFavorite} = point;
+const createOffers = (offersList, offersAll) => {
+  let offersGet = '';
+  const currentOffers = offersAll.offers;
+  const selectedOffers = currentOffers.filter((offer) => {if (offersList.includes(offer.id)) {return offer;}});
 
-  const createOffers = (offersList) => {
-    let offersGet = '';
-    const pointTypeOffer = offersByType.find((item) => item.type === type).offers;
-    const selectedOffers = pointTypeOffer.filter(
-      (offer) => {
-        if (offersList.includes(offer.id)) {return offer;}
-      });
-
-    selectedOffers
-      .map((offer) => {
-        offersGet += `<li className="event__offer">
+  selectedOffers
+    .map((offer) => {
+      offersGet += `<li className="event__offer">
           <span className="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span className="event__offer-price">${offer.price}</span>
         </li>`;
-      });
-    return offersGet;
-  };
+    });
+  return offersGet;
+};
+
+const createPointTemplate = (point, offersAll) => {
+  const {basePrice, dateFrom, dateTo, destination, type, offers, isFavorite} = point;
+
   const favorite = isFavorite
     ? '--active'
     : '';
   const dateStart = dateFrom !== null
     ? humanizeDueDate(dateFrom)
-    : '';
-  const dateEnd = dateTo !== null
-    ? humanizeDueDate(dateTo)
     : '';
   const hourStart = dateFrom !== null
     ? getHour(dateFrom)
@@ -67,7 +61,7 @@ const createPointTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOffers(offers)}
+          ${createOffers(offers, offersAll)}
         </ul>
         <button class="event__favorite-btn event__favorite-btn${favorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -86,14 +80,16 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #offersAll = null;
 
-  constructor(point) {
+  constructor(offersAll, point) {
     super();
+    this.#offersAll = offersAll;
     this.#point = point;
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#offersAll.getByType(this.#point.type));
   }
 
   setFavoriteClickHandler = (callback) => {

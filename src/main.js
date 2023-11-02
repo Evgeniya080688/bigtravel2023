@@ -2,6 +2,7 @@ import {remove, render} from './framework/render.js';
 import FilterModel from './model/filter-model.js';
 import TripsPresenter from './presenter/trips-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import InfoPresenter from './presenter/info-presenter.js';
 import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/dest-model.js';
 import OffersModel from './model/offers-model.js';
@@ -13,14 +14,16 @@ import OffersApiService from './offers-api-service.js';
 
 import {END_POINT, AUTHORIZATION} from './const.js';
 
+
 const siteTripEventsElement = document.querySelector('.trip-events');
 const siteTripMainElement = document.querySelector('.trip-main');
-const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
 const destModel = new DestinationsModel(new DestinationsApiService(END_POINT, AUTHORIZATION));
 const offersModel = new OffersModel(new OffersApiService(END_POINT, AUTHORIZATION));
+const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 const tripsPresenter = new TripsPresenter(siteTripEventsElement, pointsModel, filterModel, destModel, offersModel);
 const filterPresenter = new FilterPresenter(siteTripMainElement, filterModel, pointsModel);
+const infoPresenter = new InfoPresenter(siteTripMainElement, pointsModel, offersModel);
 const newPointButtonComponent = new NewPointButtonView();
 
 const handleNewPointFormClose = () => {
@@ -31,10 +34,11 @@ const handleNewPointButtonClick = () => {
   tripsPresenter.createPoint(handleNewPointFormClose);
   newPointButtonComponent.element.disabled = false;
 };
-render(new InfoTripView(), siteTripMainElement);
+
+//render(new InfoTripView(), siteTripMainElement);
+infoPresenter.init();
 filterPresenter.init();
-// render(newPointButtonComponent, siteTripMainElement);
-// newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+
 
 tripsPresenter.init();
 destModel.init();
