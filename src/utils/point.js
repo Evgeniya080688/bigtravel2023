@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
-const isToday = require('dayjs/plugin/isToday');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,7 +27,7 @@ const duration = (dateFrom, dateTo) => {
     minutes = due - hours * 60;
     hours = (hours < 10) ? `0${hours}` : hours;
     minutes = (minutes < 10) ? `0${minutes}` : minutes;
-    return (hours + 'H ' + minutes + 'M');
+    return (`${hours  }H ${  minutes  }M`);
   } else if (due >=1440 && due < 525600){
     days = dayjs(dateTo).diff(dayjs(dateFrom), 'day');
     hours = dayjs(dateTo).diff(dayjs(dateFrom), 'hour') - days*24;
@@ -36,7 +35,7 @@ const duration = (dateFrom, dateTo) => {
     days = (days < 10) ? `0${days}` : days;
     hours = (hours < 10) ? `0${hours}` : hours;
     minutes = (minutes < 10) ? `0${minutes}` : minutes;
-    return (days+'D ' + hours + 'H ' + minutes + 'M');
+    return (`${days}D ${  hours  }H ${  minutes  }M`);
   } else {
     years = dayjs(dateTo).diff(dayjs(dateFrom), 'year');
     days = dayjs(dateTo).diff(dayjs(dateFrom), 'days') - years*365;
@@ -46,7 +45,7 @@ const duration = (dateFrom, dateTo) => {
     days = (days < 10) ? `0${days}` : days;
     hours = (hours < 10) ? `0${hours}` : hours;
     minutes = (minutes < 10) ? `0${minutes}` : minutes;
-    return (years +'Y '+ days+'D ' + hours + 'H ' + minutes + 'M');
+    return (`${years }Y ${ days}D ${  hours  }H ${  minutes  }M`);
   }
 };
 
@@ -65,13 +64,9 @@ const sortPointsByTime = (pointA, pointB) => {
   return dueB - dueA;
 };
 
-const sortPointsByPrice = (pointA, pointB) => {
-  return parseFloat(pointB.basePrice) - parseFloat(pointA.basePrice);
-};
+const sortPointsByPrice = (pointA, pointB) => parseFloat(pointB.basePrice) - parseFloat(pointA.basePrice);
 
-const sortPointsByDay = (pointA, pointB) => {
-  return dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom), 'm');
-};
+const sortPointsByDay = (pointA, pointB) => dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom), 'm');
 
 export {humanizeDueDateShort, humanizeDueDate, getHour, getMinutes, duration, beautyDate, compareDates, isPointFuture, sortPointsByPrice, sortPointsByTime, sortPointsByDay};
 
