@@ -9,8 +9,8 @@ import 'flatpickr/dist/plugins/confirmDate/confirmDate.css';
 
 const BLANK_POINT = {
   basePrice: getRandomInteger(500,10000),
-  dateFrom: '2019-07-10T20:45:56.845Z',
-  dateTo: '2019-07-12T22:55:13.375Z',
+  dateFrom: new Date('2019-07-10T20:45:56.845Z'),
+  dateTo: new Date('2019-07-12T22:55:13.375Z'),
   destination: {
     description: '',
     name: '',

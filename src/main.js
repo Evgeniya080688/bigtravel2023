@@ -35,15 +35,15 @@ const handleNewPointButtonClick = () => {
   newPointButtonComponent.element.disabled = false;
 };
 
-//render(new InfoTripView(), siteTripMainElement);
 infoPresenter.init();
 filterPresenter.init();
-
-
 tripsPresenter.init();
-destModel.init();
-offersModel.init();
-pointsModel.init().finally(() => {
-  render(newPointButtonComponent, siteTripMainElement);
-  newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
-});
+destModel.init().then(() => offersModel.init()).then(
+  () => {
+    pointsModel.init().finally(() => {
+      render(newPointButtonComponent, siteTripMainElement);
+      newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+    });
+  }
+);
+

@@ -5,7 +5,7 @@ import {humanizeDueDateShort} from '../utils/point.js';
 export default class InfoPresenter {
   #pointsModel = null;
   #offersModel = null;
-  #offersAll = null;
+  #offersCur = null;
   #infoComponent = null;
   #infoContainer = null;
 
@@ -24,14 +24,13 @@ export default class InfoPresenter {
     let totalPrice = 0;
     let pathName = '';
     let dates = '';
-    //offersPrises.forEach((item) => {totalPrice += item.textContent;});
     pointsCurr.forEach((point) => {
-      this.#offersAll = this.#offersModel.getByType(point.type);
-      // this.#offersAll.forEach((offer) => {
-      //   totalPrice = (point.offers.includes(offer.id)) ? totalPrice += offer.price : totalPrice;
-      // });
-
-      //offers.includes(offer.id)
+      const offersCur = this.#offersModel.getByType(point.type).offers;
+      offersCur.forEach((offer) => {
+        if (point.offers.includes(offer.id)) {
+          totalPrice += offer.price;
+        }
+      });
       totalPrice += Number(point.basePrice);
     });
 
@@ -40,6 +39,13 @@ export default class InfoPresenter {
       dates =  `${humanizeDueDateShort(pointsCurr[pointsCurr.length -1].dateFrom)} — ${humanizeDueDateShort(pointsCurr[0].dateTo)}`;
     } else {
       pathName = '';
+      pointsCurr.forEach((point, i) => {
+        if (i < pointsCurr.length -1) {
+          pathName += `${point.destination.name} — `;
+        } else {
+          pathName += `${point.destination.name}`;
+        }
+      });
     }
     this.#infoComponent = new InfoTripView(totalPrice, pathName, dates);
 

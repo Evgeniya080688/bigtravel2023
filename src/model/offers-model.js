@@ -9,7 +9,6 @@ export default class OffersModel extends Observable {
   constructor(offersApiService) {
     super();
     this.#offersApiService = offersApiService;
-    //this.#offersApiService.offers.then((dest) => console.log(dest));
   }
 
   get offers() {
