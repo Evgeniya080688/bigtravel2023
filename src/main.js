@@ -1,4 +1,4 @@
-import {remove, render} from './framework/render.js';
+import {render} from './framework/render.js';
 import FilterModel from './model/filter-model.js';
 import TripsPresenter from './presenter/trips-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -7,7 +7,6 @@ import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/dest-model.js';
 import OffersModel from './model/offers-model.js';
 import NewPointButtonView from './view/new-point-button-view.js';
-import InfoTripView from './view/info-trip-view.js';
 import PointsApiService from './points-api-service.js';
 import DestinationsApiService from './destinations-api-service.js';
 import OffersApiService from './offers-api-service.js';
@@ -38,12 +37,29 @@ const handleNewPointButtonClick = () => {
 infoPresenter.init();
 filterPresenter.init();
 tripsPresenter.init();
-destModel.init().then(() => offersModel.init()).then(
-  () => {
-    pointsModel.init().finally(() => {
+
+const startLoad = async () => {
+  try {
+    await destModel.init();
+    await offersModel.init();
+    const response = await pointsModel.init();
+    if (response) {
       render(newPointButtonComponent, siteTripMainElement);
       newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
-    });
+    }
+  } catch(err) {
+    throw new Error(`Ошибка загрузки данных ${err.message}`);
   }
-);
+};
+
+startLoad();
+
+// destModel.init().then(() => offersModel.init()).then(
+//   () => {
+//     pointsModel.init().finally(() => {
+//       render(newPointButtonComponent, siteTripMainElement);
+//       newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+//     });
+//   }
+// );
 
